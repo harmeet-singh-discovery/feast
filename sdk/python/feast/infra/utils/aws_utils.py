@@ -495,6 +495,7 @@ def download_s3_directory(s3_resource, bucket: str, key: str, local_dir: str):
         local_file_dir = os.path.dirname(local_file_path)
         os.makedirs(local_file_dir, exist_ok=True)
         bucket_obj.download_file(obj.key, local_file_path)
+        return local_file_path
 
 
 def delete_s3_directory(s3_resource, bucket: str, key: str):
@@ -565,8 +566,8 @@ def unload_redshift_query_to_pa(
     )
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        download_s3_directory(s3_resource, bucket, key, temp_dir)
-        t = csv.read_csv(temp_dir)
+        temp_path = download_s3_directory(s3_resource, bucket, key, temp_dir)
+        t = csv.read_csv(temp_path)
         delete_s3_directory(s3_resource, bucket, key)
         return t
 
