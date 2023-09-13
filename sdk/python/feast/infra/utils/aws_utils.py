@@ -532,7 +532,7 @@ def execute_redshift_query_and_unload_to_s3(
     # Run the query, unload the results to S3
     unique_table_name = "_" + str(uuid.uuid4()).replace("-", "")
     query = f"CREATE TEMPORARY TABLE {unique_table_name} AS ({query});\n"
-    query += f"UNLOAD ('SELECT * FROM {unique_table_name}') TO '{s3_path}/' IAM_ROLE '{iam_role}' FORMAT AS PARQUET"
+    query += f"UNLOAD ('SELECT * FROM {unique_table_name}') TO '{s3_path}/' IAM_ROLE '{iam_role}' FORMAT AS CSV"
     execute_redshift_statement(
         redshift_data_client, cluster_id, workgroup, database, user, query
     )
