@@ -8,6 +8,7 @@ from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 import pandas as pd
 import pyarrow
 import pyarrow as pa
+import pyarrow.csv as csv
 import pyarrow.parquet as pq
 from tenacity import (
     retry,
@@ -565,8 +566,9 @@ def unload_redshift_query_to_pa(
 
     with tempfile.TemporaryDirectory() as temp_dir:
         download_s3_directory(s3_resource, bucket, key, temp_dir)
+        t = csv.read_csv(temp_dir)
         delete_s3_directory(s3_resource, bucket, key)
-        return pq.read_table(temp_dir)
+        return t
 
 
 def unload_redshift_query_to_df(
